@@ -4,10 +4,21 @@ from datetime import date
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI(title="CinemaThisWeek API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # --------------------------------------------------------------------
 # Hard-coded movie stub for now
 # Later this will come from Postgres + ingestion/LLM pipeline
