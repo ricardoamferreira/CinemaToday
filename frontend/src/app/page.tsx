@@ -252,7 +252,7 @@ export default function HomePage() {
               Guess this current UK Box Office Top 10 film
             </h1>
             <p className="text-sm text-zinc-400">
-              Minimal clues, maximal suspense. Submit your guess after every hint or
+              Minimal AI clues, maximal suspense. Submit your guess after every hint or
               ride them out until you&apos;re certain.
             </p>
             {game && (
@@ -288,7 +288,7 @@ export default function HomePage() {
 
               <div className="space-y-4 rounded-3xl border border-white/10 bg-white/[0.02] p-6 shadow-[0_15px_60px_rgba(0,0,0,0.35)] backdrop-blur">
                 <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">
-                  Current clue
+                  AI clue
                 </p>
                 <p className="text-lg leading-relaxed text-white">
                   {currentClueText}
