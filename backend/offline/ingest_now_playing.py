@@ -1,7 +1,6 @@
 # backend/offline/ingest_now_playing.py
 
 import os
-from statistics import mean
 from typing import Any
 
 import mlflow
@@ -79,6 +78,12 @@ def ingest_now_playing(
         max_pages=max_pages,
     )
 
+    top_movies = sorted(
+        movies_raw,
+        key=lambda item: float(item.get("popularity") or 0.0),
+        reverse=True,
+    )[:10]
+
     session = SessionLocal()
     try:
         with mlflow.start_run(run_name="ingest_now_playing_tmdb"):
@@ -87,12 +92,19 @@ def ingest_now_playing(
             mlflow.log_param("language", language)
             mlflow.log_param("max_pages", max_pages)
             mlflow.log_metric("num_fetched", len(movies_raw))
+            mlflow.log_metric("num_selected", len(top_movies))
 
             inserted = 0
             updated = 0
             runtime_titles: list[str] = []
 
-            for item in movies_raw:
+            # Start with a clean slate so only top-N are active
+            deactivated = session.query(Movie).update(
+                {Movie.is_active: False}, synchronize_session=False
+            )
+            mlflow.log_metric("num_deactivated", float(deactivated or 0))
+
+            for item in top_movies:
                 tmdb_id = item.get("id")
                 if tmdb_id is None:
                     continue
@@ -126,6 +138,7 @@ def ingest_now_playing(
                     existing.title = title
                     existing.overview = overview
                     existing.poster_url = poster_url
+                    existing.is_active = True
                     if not existing.slug:
                         existing.slug = candidate_slug
                     updated += 1
@@ -144,6 +157,7 @@ def ingest_now_playing(
                     slug=slug,
                     poster_url=poster_url,
                     overview=overview,
+                    is_active=True,
                 )
                 session.add(movie)
                 inserted += 1
@@ -163,8 +177,8 @@ def ingest_now_playing(
             mlflow.log_artifact(artifact_path)
 
             print(
-                f"Ingested now playing from TMDB. Inserted={inserted}, "
-                f"Updated={updated}, Total raw={len(movies_raw)}"
+                f"Ingested now playing from TMDB (top {len(top_movies)}). "
+                f"Inserted={inserted}, Updated={updated}, Total raw={len(movies_raw)}"
             )
     except Exception:
         session.rollback()

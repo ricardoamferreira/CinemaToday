@@ -36,6 +36,7 @@ class TodayGameResponse(BaseModel):
     current_clue_index: int
     current_clue_text: str
     solved: bool
+    poster_url: str | None = None
 
 
 class GuessRequest(BaseModel):
@@ -83,7 +84,12 @@ def get_today_game() -> TodayGameResponse:
     """
     session = SessionLocal()
     try:
-        movie = session.query(Movie).order_by(func.random()).first()
+        movie = (
+            session.query(Movie)
+            .filter(Movie.is_active.is_(True))
+            .order_by(func.random())
+            .first()
+        )
         if not movie:
             raise HTTPException(status_code=404, detail="No movies available.")
 
@@ -105,6 +111,7 @@ def get_today_game() -> TodayGameResponse:
             current_clue_index=first_clue.order_index,
             current_clue_text=first_clue.text,
             solved=False,
+            poster_url=movie.poster_url,
         )
     finally:
         session.close()

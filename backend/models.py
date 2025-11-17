@@ -2,6 +2,7 @@
 from datetime import date, datetime
 
 from sqlalchemy import (
+    Boolean,
     Column,
     Date,
     DateTime,
@@ -26,6 +27,7 @@ class Movie(Base):
     poster_url = Column(String, nullable=True)
     overview = Column(Text, nullable=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    is_active = Column(Boolean, nullable=False, default=False, index=True)
 
     # relationships
     clues = relationship("Clue", back_populates="movie", cascade="all, delete-orphan")
