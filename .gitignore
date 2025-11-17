@@ -3,8 +3,10 @@ backend/.venv/
 backend/__pycache__/
 backend/*.pyc
 backend/.env
+backend/offline/__pycache__/
+mlruns/
 
-# Node / frontend (for later)
+# Node / frontend
 frontend/node_modules/
 frontend/.next/
 frontend/.turbo/
@@ -14,3 +16,7 @@ frontend/.turbo/
 Thumbs.db
 .vscode/
 .idea/
+
+# Logs
+generated_clues_openai.txt
+sample_clues.txt
