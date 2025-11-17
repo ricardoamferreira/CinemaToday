@@ -20,3 +20,4 @@ Thumbs.db
 # Logs
 generated_clues_openai.txt
 sample_clues.txt
+ingested_movies.txt

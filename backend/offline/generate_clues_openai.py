@@ -11,7 +11,7 @@ from ..models import Movie
 
 client = OpenAI()
 
-PROMPT_VERSION = "v2"
+PROMPT_VERSION = "v3"
 MODEL_NAME = "gpt-5-mini"
 
 SYSTEM_PROMPT = """
@@ -24,6 +24,7 @@ Rules:
 the second difficulty 8, the third difficulty 5, and the fourth difficulty 3.
 - Never include the film title, actor names, or director names.
 - Refer to plot, themes, setting, genre, or iconic imagery.
+- Avoid big spoilers.
 - Each clue must be a single sentence under 35 words.
 - Respond ONLY in JSON with structure:
   {"clues": ["clue 1", "clue 2", "clue 3", "clue 4"]}.
